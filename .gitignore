@@ -1,4 +1,6 @@
 *.zip
 sdl_ogl
 *.*.swp
+*.*.swo
 main
+hardcopy.*

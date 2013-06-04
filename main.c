@@ -2,7 +2,9 @@
 #include <stdio.h>
 #include <math.h>
 #include "SDL_opengl.h"
-
+#include "graphics.h"
+#include "gamestate.h"
+#include "controller.h"
 
 int SDLEventFilter(const SDL_Event* filterEvent){
 	if(filterEvent->type == SDL_MOUSEMOTION)
@@ -11,7 +13,7 @@ int SDLEventFilter(const SDL_Event* filterEvent){
 	return 1;
 }
 
-int toggle_fullscreen(SDL_Surface *screen){
+void toggle_fullscreen(SDL_Surface *screen){
 	if (screen->flags & SDL_FULLSCREEN){
 		screen = SDL_SetVideoMode(800,600,32,SDL_OPENGL | SDL_SWSURFACE);
 	}
@@ -23,40 +25,22 @@ int toggle_fullscreen(SDL_Surface *screen){
 
 
 int main(int argc, char** argv) {
-	if (SDL_Init(SDL_INIT_EVERYTHING) == -1){
-		return -1;
 
-	}
-    SDL_GL_SetAttribute( SDL_GL_DOUBLEBUFFER, 1 ); // *new*
+	init_graphics();
+	start_new_game();
 
-	SDL_Surface* screen = SDL_SetVideoMode(800,600,32,SDL_OPENGL | SDL_SWSURFACE);//SDL_SWSURFACE | SDL_DOUBLEBUF);
-	SDL_Event event;
 
-    GLuint texture; // Texture object handle
-
-	glClearColor( 255, 255, 255, 0 );
-	glEnable( GL_TEXTURE_2D ); // Need this to display a texture
-
-	 glMatrixMode( GL_PROJECTION );
-    glLoadIdentity();
-
-    glOrtho( 0, 640, 480, 0, -1, 1 );
-    
-    glMatrixMode( GL_MODELVIEW );
-    glLoadIdentity();
-
-	Uint32 bgColor = SDL_MapRGB(screen->format, 255,0,0);
-	Uint32 boxColor = SDL_MapRGB(screen->format, 0,0,0);
-	SDL_FillRect(screen, NULL, bgColor);  
-	SDL_Flip(screen);
 	SDL_SetEventFilter(SDLEventFilter);
 	int fps = 60;
 	
     int tickInterval = 1000 / fps;
+	SDL_Event event;
 	
     Uint32 nextTick;	
-	SDL_Surface* box = SDL_LoadBMP("image.bmp"); 
+
+    GLuint texture; 
     glGenTextures( 1, &texture );
+	SDL_Surface* box = SDL_LoadBMP("image.bmp"); 
     glBindTexture( GL_TEXTURE_2D, texture );
     glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR );
     glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR );
@@ -70,16 +54,15 @@ int main(int argc, char** argv) {
 
     glBindTexture( GL_TEXTURE_2D, texture );
 
-	float x = 100;
-	float y = 100;
+	float x;
+	float y;
 
 	float degrees = 0;
 		
 	int quit = 0;
-	int dpressed = 0;
-	int wpressed = 0;
-	int apressed = 0;
 	while(!quit){
+		x = get_current_game()->x;
+		y = get_current_game()->y;
 
 		glClear( GL_COLOR_BUFFER_BIT );
 		nextTick = SDL_GetTicks() + tickInterval;
@@ -89,43 +72,26 @@ int main(int argc, char** argv) {
 					quit = 1;
 					break;
 				}
-				else if (event.type == SDL_KEYUP && event.key.keysym.sym == SDLK_f){
-					toggle_fullscreen(screen);
-				}else if (event.type == SDL_KEYDOWN && event.key.keysym.sym == SDLK_a){
-					apressed = 1;
-				}
-				else if (event.type == SDL_KEYUP && event.key.keysym.sym == SDLK_a){
-					apressed = 0;
-				}
-				else if (event.type == SDL_KEYDOWN && event.key.keysym.sym == SDLK_d){
-					dpressed = 1;
-				}
-				else if (event.state == SDL_PRESSED && event.key.keysym.sym == SDLK_w){
-					wpressed = 1;
-					printf("test");
-				}
-				else if (event.type == SDL_KEYUP && event.key.keysym.sym == SDLK_w){
-					wpressed = 0;
-				}
-				else if (event.type == SDL_KEYUP && event.key.keysym.sym == SDLK_d){
-					dpressed = 0;
+				else if (event.type == SDL_KEYUP || SDL_KEYDOWN){
+					handle_keypress(event);
 				}
 			}
-	if(dpressed){
+	if(get_keyboardstate()->turn_right){
 					degrees+=3;
 	}
-	if(apressed){
+	if(get_keyboardstate()->turn_left){
 					degrees-=3;
 	}
-	if(wpressed){
-		//printf("%f\n",degrees);
-	//	printf("%f\n",cos(M_PI));
-	//	printf("%f\n",cos(degrees));
-		//printf("%f\n",sin(degrees));
+	if(get_keyboardstate()->go_forward){
 		y = y-3*cos(degrees*M_PI/180);
 		x = x+3*sin(degrees*M_PI/180);
-				
 	}
+	if(get_keyboardstate()->go_backwards){
+		y = y+cos(degrees*M_PI/180);
+		x = x-sin(degrees*M_PI/180);
+	}
+	get_current_game()->x = x;
+	get_current_game()->y = y;
 
 	glTranslatef(x+64,y+64,0);
 	glRotatef(degrees, 0.0, 0.0, 1.0);
@@ -148,6 +114,8 @@ int main(int argc, char** argv) {
         glTexCoord2i( 0, 1 );
         glVertex2f( x, 128+y);
     glEnd();
+
+
     SDL_GL_SwapBuffers();
     glLoadIdentity();
 
@@ -158,6 +126,7 @@ int main(int argc, char** argv) {
 		if (delay > 0)
 			SDL_Delay(delay);
 	}
+	end_game();
 	SDL_Quit();
 	return 0;
 }
