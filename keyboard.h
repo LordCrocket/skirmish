@@ -3,6 +3,7 @@ SDLKey forward;
 SDLKey right;
 SDLKey left;
 SDLKey back;
+SDLKey fullscreen;
 
 typedef struct  {
 	int turn_left;

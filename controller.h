@@ -1,2 +1,2 @@
-
-void handle_keypress(SDL_Event event);
+int handle_events();
+void update_state();

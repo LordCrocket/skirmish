@@ -1,6 +1,11 @@
 #include <SDL.h>
 #include "graphics.h"
+#include "gamestate.h"
 #include "SDL_opengl.h"
+
+	GLuint block; 
+	GLuint texture; 
+
 void init_screen(){
 
     SDL_GL_SetAttribute( SDL_GL_DOUBLEBUFFER, 1 );
@@ -10,10 +15,24 @@ void init_screen(){
 }
 
 void init_matrix(){
-
 	glMatrixMode( GL_PROJECTION );
 	glOrtho( 0, 640, 480, 0, -1, 1 );
     glMatrixMode( GL_MODELVIEW );
+}
+
+void create_sprite(GLuint* sprite,char* filename){
+	glGenTextures( 1, sprite );
+	SDL_Surface* image = SDL_LoadBMP(filename); 
+    glBindTexture( GL_TEXTURE_2D, *sprite );
+    glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR );
+    glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR );
+    glTexImage2D( GL_TEXTURE_2D, 0, 3, image->w, image->h, 0, 
+                      GL_BGR, GL_UNSIGNED_BYTE, image->pixels );
+					  
+    if ( image ) { 
+        SDL_FreeSurface( image );
+    }
+
 }
 
 int init_graphics() { 
@@ -23,8 +42,65 @@ int init_graphics() {
 	init_screen();
 	glEnable( GL_TEXTURE_2D ); // Need this to display a texture
 	init_matrix();	
+	create_sprite(&texture,"image.bmp");
+	create_sprite(&block,"block.bmp");
 	
     return 0;
+}
+
+void draw_graphics(){
+	glClear( GL_COLOR_BUFFER_BIT );
+	float x = get_current_game()->x;
+	float y = get_current_game()->y;
+	float degrees = get_current_game()->angle;
+
+
+    glBindTexture( GL_TEXTURE_2D, texture );
+	glTranslatef(x+64,y+64,0);
+	glRotatef(degrees, 0.0, 0.0, 1.0);
+	glTranslatef(-(x+64),-(y+64),0);
+
+	glBegin( GL_QUADS );
+        // Top-left vertex (corner)
+        glTexCoord2i( 0, 0 );
+        glVertex2f( x, y );
+    
+        // Bottom-left vertex (corner)
+        glTexCoord2i( 1, 0 );
+        glVertex2f( 128+x, y);
+    
+        // Bottom-right vertex (corner)
+        glTexCoord2i( 1, 1 );
+        glVertex2f( 128+x, 128+y);
+    
+        // Top-right vertex (corner)
+        glTexCoord2i( 0, 1 );
+        glVertex2f( x, 128+y);
+    glEnd();
+    glLoadIdentity();
+    glBindTexture( GL_TEXTURE_2D, block );
+	glBegin( GL_QUADS );
+        // Top-left vertex (corner)
+        glTexCoord2i( 0, 0 );
+        glVertex2f( 0, 0 );
+    
+        // Bottom-left vertex (corner)
+        glTexCoord2i( 1, 0 );
+        glVertex2f( 128, 0);
+    
+        // Bottom-right vertex (corner)
+        glTexCoord2i( 1, 1 );
+        glVertex2f( 128, 128);
+    
+        // Top-right vertex (corner)
+        glTexCoord2i( 0, 1 );
+        glVertex2f( 0, 128);
+    glEnd();
+
+
+
+    SDL_GL_SwapBuffers();
+    glLoadIdentity();
 }
 
 
