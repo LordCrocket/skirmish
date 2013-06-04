@@ -50,54 +50,43 @@ int init_graphics() {
 
 void draw_graphics(){
 	glClear( GL_COLOR_BUFFER_BIT );
-	float x = get_current_game()->x;
-	float y = get_current_game()->y;
-	float degrees = get_current_game()->angle;
+	Unit** all_units = malloc(NUMBER_OF_PLAYERS * NUMBER_OF_UNITS * sizeof(Unit*));
+	get_all_units(all_units);
+	for(int x; x < NUMBER_OF_PLAYERS * NUMBER_OF_UNITS;x++){
+		Unit* unit = all_units[x];	
+		float x = unit->x;
+		float y = unit->y;
+		float angle = unit->angle;
 
+    	glBindTexture( GL_TEXTURE_2D, texture );
+		if(angle != 0){
 
-    glBindTexture( GL_TEXTURE_2D, texture );
-	glTranslatef(x+64,y+64,0);
-	glRotatef(degrees, 0.0, 0.0, 1.0);
-	glTranslatef(-(x+64),-(y+64),0);
-
-	glBegin( GL_QUADS );
+			glTranslatef(x+64,y+64,0);
+			glRotatef(angle, 0.0, 0.0, 1.0);
+			glTranslatef(-(x+64),-(y+64),0);
+		}
+			glBegin( GL_QUADS );
         // Top-left vertex (corner)
-        glTexCoord2i( 0, 0 );
-        glVertex2f( x, y );
+        		glTexCoord2i( 0, 0 );
+				glVertex2f( x, y );
     
         // Bottom-left vertex (corner)
-        glTexCoord2i( 1, 0 );
-        glVertex2f( 128+x, y);
+				glTexCoord2i( 1, 0 );
+				glVertex2f( 128+x, y);
     
         // Bottom-right vertex (corner)
-        glTexCoord2i( 1, 1 );
-        glVertex2f( 128+x, 128+y);
+				glTexCoord2i( 1, 1 );
+				glVertex2f( 128+x, 128+y);
     
         // Top-right vertex (corner)
-        glTexCoord2i( 0, 1 );
-        glVertex2f( x, 128+y);
-    glEnd();
-    glLoadIdentity();
-    glBindTexture( GL_TEXTURE_2D, block );
-	glBegin( GL_QUADS );
-        // Top-left vertex (corner)
-        glTexCoord2i( 0, 0 );
-        glVertex2f( 0, 0 );
-    
-        // Bottom-left vertex (corner)
-        glTexCoord2i( 1, 0 );
-        glVertex2f( 128, 0);
-    
-        // Bottom-right vertex (corner)
-        glTexCoord2i( 1, 1 );
-        glVertex2f( 128, 128);
-    
-        // Top-right vertex (corner)
-        glTexCoord2i( 0, 1 );
-        glVertex2f( 0, 128);
-    glEnd();
+				glTexCoord2i( 0, 1 );
+        		glVertex2f( x, 128+y);
+    		glEnd();
 
+	    glLoadIdentity();
 
+	}
+	free(all_units);
 
     SDL_GL_SwapBuffers();
     glLoadIdentity();

@@ -1,7 +1,4 @@
 #include "keyboard.h"
-typedef struct  {
-	int id;
-} Player;
 
 typedef struct {
 	float angle;
@@ -10,16 +7,19 @@ typedef struct {
 } Unit;
 
 typedef struct  {
+	Unit** units;
+} Player;
+
+typedef struct  {
 	Player** players;
-	float angle;
-	float x;
-	float y;
 } Game;
 
 
 void start_new_game();
 void end_game();
-Game* get_current_game();
+void get_all_units();
+//Game* get_current_game();
+Unit* get_avatar();
 Keyboardstate* get_keyboardstate();
 int NUMBER_OF_PLAYERS;
 int NUMBER_OF_UNITS;

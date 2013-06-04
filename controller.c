@@ -44,20 +44,20 @@ int handle_events(){
 }
 
 void update_state(){
-	Game* state = get_current_game();
+	Unit* avatar = get_avatar();
 
 	if(get_keyboardstate()->turn_right){
-		state->angle+=3;
+		avatar->angle+=3;
 	}
 	if(get_keyboardstate()->turn_left){
-		state->angle-=3;
+		avatar->angle-=3;
 	}
 	if(get_keyboardstate()->go_forward){
-		state->x+= 3*sin(state->angle*M_PI/180);
-		state->y-= 3*cos(state->angle*M_PI/180);
+		avatar->x+= 3*sin(avatar->angle*M_PI/180);
+		avatar->y-= 3*cos(avatar->angle*M_PI/180);
 	}
 	if(get_keyboardstate()->go_backwards){
-		state->x-= sin(state->angle*M_PI/180);
-		state->y+= cos(state->angle*M_PI/180);
+		avatar->x-= sin(avatar->angle*M_PI/180);
+		avatar->y+= cos(avatar->angle*M_PI/180);
 	}
 }

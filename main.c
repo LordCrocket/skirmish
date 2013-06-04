@@ -35,7 +35,6 @@ int main(int argc, char** argv) {
     int tickInterval = 1000 / fps;
        
     Uint32 nextTick; 
-	
 
 	int quit = 0;
 	while(!quit){
