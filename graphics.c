@@ -50,9 +50,9 @@ int init_graphics() {
 
 void draw_graphics(){
 	glClear( GL_COLOR_BUFFER_BIT );
-	Unit** all_units = malloc(NUMBER_OF_PLAYERS * NUMBER_OF_UNITS * sizeof(Unit*));
+	Unit** all_units = malloc(get_number_of_players() * get_number_of_units() * sizeof(Unit*));
 	get_all_units(all_units);
-	for(int x; x < NUMBER_OF_PLAYERS * NUMBER_OF_UNITS;x++){
+	for(int x; x < get_number_of_players() * get_number_of_units();x++){
 		Unit* unit = all_units[x];	
 		float x = unit->x;
 		float y = unit->y;

@@ -58,20 +58,8 @@ void send_actions_to_server(){
 }
 
 void update_state(){
-	Unit* avatar = get_avatar();
-
-	if(get_keyboardstate()->turn_right){
-		avatar->angle+=3;
-	}
-	if(get_keyboardstate()->turn_left){
-		avatar->angle-=3;
-	}
-	if(get_keyboardstate()->go_forward){
-		avatar->x+= 3*sin(avatar->angle*M_PI/180);
-		avatar->y-= 3*cos(avatar->angle*M_PI/180);
-	}
-	if(get_keyboardstate()->go_backwards){
-		avatar->x-= sin(avatar->angle*M_PI/180);
-		avatar->y+= cos(avatar->angle*M_PI/180);
-	}
+	Unit** all_units = malloc(get_number_of_players() * get_number_of_players() * sizeof(Unit*));
+	get_all_units(all_units); 
+	update_unit_state(all_units);
+	free(all_units);
 }

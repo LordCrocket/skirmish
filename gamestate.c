@@ -6,13 +6,10 @@ Keyboardstate* keyboardstate;
 
 
 int game_ongoing = 0;
-int PLAYER_ID = 0;
-int NUMBER_OF_PLAYERS = 2;
-int NUMBER_OF_UNITS = 2;
 
 
 void create_units(Unit** units){
-	for(int i = 0; i<NUMBER_OF_UNITS;i++){
+	for(int i = 0; i<current_game->number_of_units;i++){
 		units[i]= malloc(sizeof(Unit)); 
 		units[i]->angle = 0;
 		units[i]->x = 0;
@@ -21,23 +18,23 @@ void create_units(Unit** units){
 }
 void delete_units(Unit** units){
 
-	for(int i = 0; i<NUMBER_OF_UNITS;i++){
+	for(int i = 0; i<current_game->number_of_units;i++){
 		free(units[i]);
 	}
 }
 
 void create_players(Player** players){
 
-	for(int i = 0; i<NUMBER_OF_PLAYERS;i++){
+	for(int i = 0; i<current_game->number_of_players;i++){
 		players[i]= malloc(sizeof(Player)); 
-		players[i]->units = malloc(NUMBER_OF_UNITS * sizeof(Unit *));
+		players[i]->units = malloc(current_game->number_of_players * sizeof(Unit *));
 		create_units(players[i]->units);
 	}
 
 }
 void delete_players(Player** players){
 
-	for(int i = 0; i<NUMBER_OF_PLAYERS;i++){
+	for(int i = 0; i<current_game->number_of_players;i++){
 		delete_units(players[i]->units);
 		free(players[i]->units);
 		free(players[i]);
@@ -62,7 +59,10 @@ void start_new_game(){
 	if(game_ongoing == 0){
 		create_keyboardstate();
 		current_game = malloc(sizeof(Game));
-		current_game->players = malloc(NUMBER_OF_PLAYERS * sizeof(Player *));
+		current_game->number_of_players = 2;
+		current_game->number_of_units = 2;
+		current_game->players = malloc(current_game->number_of_players * sizeof(Player *));
+		
 		create_players(current_game->players);
 		Unit* unit  = current_game->players[0]->units[0];
 		unit->angle = 0;
@@ -86,11 +86,17 @@ Keyboardstate* get_keyboardstate(){
 Unit* get_avatar(){
 	return current_game->players[0]->units[0];
 }
+int get_number_of_players(){
+	return current_game->number_of_players;
+}
+int get_number_of_units(){
+	return current_game->number_of_units;
+}
 
 void get_all_units(Unit** units){
 	int number_of_units = 0;
-	for(int x = 0; x< NUMBER_OF_PLAYERS; x++){
-		for(int i = 0; i < NUMBER_OF_UNITS; i++){
+	for(int x = 0; x< current_game->number_of_players; x++){
+		for(int i = 0; i < current_game->number_of_units; i++){
 			units[number_of_units++] = current_game->players[x]->units[i];
 		}
 	}
