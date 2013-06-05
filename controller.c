@@ -2,6 +2,8 @@
 #include <SDL.h>
 #include "gamestate.h"
 #include <math.h>
+#include "action.h"
+#include "serverproxy.h"
 
 int is_pressed(SDL_Event event){
 	return (event.type == SDL_KEYDOWN);
@@ -40,7 +42,19 @@ int handle_events(){
 					handle_keypress(event);
 			}
 	}
+
 	return quit;
+}
+
+void send_actions_to_server(){
+	if(get_keyboardstate()->go_forward)
+		send_action(GO_FORWARD);
+	if(get_keyboardstate()->go_backwards)
+		send_action(GO_BACKWARDS);
+	if(get_keyboardstate()->turn_left)
+		send_action(TURN_LEFT);
+	if(get_keyboardstate()->turn_right)
+		send_action(TURN_RIGHT);
 }
 
 void update_state(){

@@ -40,6 +40,7 @@ int main(int argc, char** argv) {
 	while(!quit){
 		nextTick = SDL_GetTicks() + tickInterval;
 		quit = handle_events();
+		send_actions_to_server();
 		update_state();
 		draw_graphics();
 
