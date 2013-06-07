@@ -8,10 +8,12 @@
 	int fullscreen_on = 0;
 	int screen_w = 800;
 	int screen_h = 600;
+	int screen_props = SDL_OPENGL | SDL_SWSURFACE;
 	
 
 void init_screen(){
-	SDL_SetVideoMode(screen_w,screen_h,32, SDL_OPENGL | SDL_SWSURFACE);
+	
+	SDL_SetVideoMode(screen_w,screen_h,32, screen_props);
     SDL_GL_SetAttribute( SDL_GL_DOUBLEBUFFER, 1 );
 }
 void init_matrix(){
@@ -45,19 +47,14 @@ void init_opengl(){
 void toggle_fullscreen(){
 	if(!fullscreen_on){
 		
-		screen_w = 1920;
-		screen_h = 1200;
+		screen_props = SDL_OPENGL | SDL_FULLSCREEN;
 		fullscreen_on = 1;
-		//glOrtho( 0, 1920, 1200, 0, -1, 1 );
 	}
 	else{
-		screen_w = 800;
-		screen_h = 600;
+		screen_props = SDL_OPENGL | SDL_SWSURFACE;
 		fullscreen_on = 0;
-		//glOrtho( 0, 800, 600, 0, -1, 1 );
 	}
 	init_screen();
-	init_opengl();
 		
 }
 

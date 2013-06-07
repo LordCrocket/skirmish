@@ -4,3 +4,4 @@ sdl_ogl
 *.*.swo
 main
 hardcopy.*
+list_modes
