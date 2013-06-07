@@ -15,9 +15,11 @@ void init_screen(){
 	
 	SDL_SetVideoMode(screen_w,screen_h,32, screen_props);
     SDL_GL_SetAttribute( SDL_GL_DOUBLEBUFFER, 1 );
+	glViewport(0, 0, screen_w, screen_h);
 }
 void init_matrix(){
 	glMatrixMode( GL_PROJECTION );
+		glLoadIdentity();
 	glOrtho( 0, screen_w, screen_h, 0, -1, 1 );
     glMatrixMode( GL_MODELVIEW );
 }
@@ -40,6 +42,7 @@ void init_opengl(){
 	glClearColor( 255, 255, 255, 0 );
 	glEnable( GL_TEXTURE_2D ); 
 	init_matrix();	
+	glLoadIdentity();
 	create_sprite(&texture,"image.bmp");
 	create_sprite(&block,"block.bmp");
 
@@ -47,14 +50,20 @@ void init_opengl(){
 void toggle_fullscreen(){
 	if(!fullscreen_on){
 		
+		screen_w = 1920;
+		screen_h = 1200;
 		screen_props = SDL_OPENGL | SDL_FULLSCREEN;
 		fullscreen_on = 1;
 	}
 	else{
+		screen_w = 800;
+		screen_h = 600;
 		screen_props = SDL_OPENGL | SDL_SWSURFACE;
 		fullscreen_on = 0;
 	}
 	init_screen();
+	init_matrix();
+	init_opengl();
 		
 }
 
