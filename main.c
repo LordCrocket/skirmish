@@ -13,15 +13,6 @@ int SDLEventFilter(const SDL_Event* filterEvent){
 	return 1;
 }
 
-void toggle_fullscreen(SDL_Surface *screen){
-	if (screen->flags & SDL_FULLSCREEN){
-		screen = SDL_SetVideoMode(800,600,32,SDL_OPENGL | SDL_SWSURFACE);
-	}
-	else {
-		screen = SDL_SetVideoMode(1900,1200,32,SDL_OPENGL|SDL_FULLSCREEN);
-	}
-
-}
 
 
 int main(int argc, char** argv) {

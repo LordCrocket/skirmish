@@ -4,6 +4,7 @@
 #include <math.h>
 #include "action.h"
 #include "serverproxy.h"
+#include "graphics.h"
 
 int is_pressed(SDL_Event event){
 	return (event.type == SDL_KEYDOWN);
@@ -13,7 +14,7 @@ void handle_keypress(SDL_Event event){
 
 	SDLKey key = event.key.keysym.sym;
 	if (event.type == SDL_KEYUP && key == fullscreen){
-	//				toggle_fullscreen(screen);
+		toggle_fullscreen();
 	}
 	else if (key == left){
 		get_keyboardstate()->turn_left = is_pressed(event);

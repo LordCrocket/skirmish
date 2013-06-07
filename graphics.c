@@ -5,21 +5,20 @@
 
 	GLuint block; 
 	GLuint texture; 
+	int fullscreen_on = 0;
+	int screen_w = 800;
+	int screen_h = 600;
+	
 
 void init_screen(){
-
+	SDL_SetVideoMode(screen_w,screen_h,32, SDL_OPENGL | SDL_SWSURFACE);
     SDL_GL_SetAttribute( SDL_GL_DOUBLEBUFFER, 1 );
-	SDL_SetVideoMode(800,600,32,SDL_OPENGL | SDL_SWSURFACE);
-	glClearColor( 255, 255, 255, 0 );
-
 }
-
 void init_matrix(){
 	glMatrixMode( GL_PROJECTION );
-	glOrtho( 0, 640, 480, 0, -1, 1 );
+	glOrtho( 0, screen_w, screen_h, 0, -1, 1 );
     glMatrixMode( GL_MODELVIEW );
 }
-
 void create_sprite(GLuint* sprite,char* filename){
 	glGenTextures( 1, sprite );
 	SDL_Surface* image = SDL_LoadBMP(filename); 
@@ -35,15 +34,41 @@ void create_sprite(GLuint* sprite,char* filename){
 
 }
 
+void init_opengl(){
+	glClearColor( 255, 255, 255, 0 );
+	glEnable( GL_TEXTURE_2D ); 
+	init_matrix();	
+	create_sprite(&texture,"image.bmp");
+	create_sprite(&block,"block.bmp");
+
+}
+void toggle_fullscreen(){
+	if(!fullscreen_on){
+		
+		screen_w = 1920;
+		screen_h = 1200;
+		fullscreen_on = 1;
+		//glOrtho( 0, 1920, 1200, 0, -1, 1 );
+	}
+	else{
+		screen_w = 800;
+		screen_h = 600;
+		fullscreen_on = 0;
+		//glOrtho( 0, 800, 600, 0, -1, 1 );
+	}
+	init_screen();
+	init_opengl();
+		
+}
+
+
+
 int init_graphics() { 
 	if (SDL_Init(SDL_INIT_EVERYTHING) == -1){
 		return -1;
 	}
 	init_screen();
-	glEnable( GL_TEXTURE_2D ); // Need this to display a texture
-	init_matrix();	
-	create_sprite(&texture,"image.bmp");
-	create_sprite(&block,"block.bmp");
+	init_opengl();
 	
     return 0;
 }
