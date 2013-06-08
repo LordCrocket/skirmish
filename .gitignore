@@ -5,3 +5,4 @@ sdl_ogl
 main
 hardcopy.*
 list_modes
+*.a
