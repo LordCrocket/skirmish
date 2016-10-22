@@ -1,19 +1,20 @@
 #include <stdio.h>
-#include <SDL.h>
+#include <stdlib.h>
 #include "gamestate.h"
 #include <math.h>
 #include "action.h"
 #include "serverproxy.h"
 #include "graphics.h"
+#include <SFML/Window/Event.h>
 
-int is_pressed(SDL_Event event){
-	return (event.type == SDL_KEYDOWN);
+int is_pressed(sfEvent* event){
+	return (event->type == sfEvtKeyPressed);
 }
 
-void handle_keypress(SDL_Event event){
+void handle_keypress(sfEvent* event){
 
-	SDLKey key = event.key.keysym.sym;
-	if (event.type == SDL_KEYUP && key == fullscreen){
+	sfKeyCode key = event->key.code;
+	if (event->type == sfEvtKeyPressed && key == fullscreen){
 		toggle_fullscreen();
 	}
 	else if (key == left){
@@ -28,19 +29,21 @@ void handle_keypress(SDL_Event event){
 	else if (key == back){
 		get_keyboardstate()->go_backwards = is_pressed(event);
 	}
-						
 }
 
 int handle_events(){
-	SDL_Event event;
+	sfEvent event;
 	int quit = 0;
-	while (SDL_PollEvent(&event)){
-			if (event.type == SDL_QUIT){
+	while (poll_event(&event)){
+			if (event.type == sfEvtClosed){
 				quit = 1;
 				break;
 			}
-			else if (event.type == SDL_KEYUP || SDL_KEYDOWN){
-					handle_keypress(event);
+			else if (event.type == sfEvtKeyPressed || sfEvtKeyReleased){
+					handle_keypress(&event);
+			}
+			else if (sfEvtResized){
+				resize(event.size.width,event.size.height);
 			}
 	}
 

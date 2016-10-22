@@ -1,4 +1,5 @@
 #include "gamestate.h"
+#include <stdio.h>
 #include <stdlib.h>
 
 Game* current_game;

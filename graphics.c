@@ -1,127 +1,83 @@
-#include <SDL.h>
 #include "graphics.h"
 #include "gamestate.h"
-#include "SDL_opengl.h"
+#include <SFML/Graphics.h>
+#include <SFML/Window.h>
+#include <stdlib.h>
 
-	GLuint block; 
-	GLuint texture; 
-	int fullscreen_on = 0;
-	int screen_w = 800;
-	int screen_h = 600;
-	int screen_props = SDL_OPENGL | SDL_SWSURFACE;
-	
+sfRenderWindow* window;
+sfTexture* texture;
+sfSprite* sprite;
+int fullscreen_on = 0;
+int screen_w = 1920;
+int screen_h = 1080;
+int screen_props = sfResize | sfClose;
+
 
 void init_screen(){
-	
-	SDL_SetVideoMode(screen_w,screen_h,32, screen_props);
-    SDL_GL_SetAttribute( SDL_GL_DOUBLEBUFFER, 1 );
-	glViewport(0, 0, screen_w, screen_h);
-}
-void init_matrix(){
-	glMatrixMode( GL_PROJECTION );
-		glLoadIdentity();
-	glOrtho( 0, screen_w, screen_h, 0, -1, 1 );
-    glMatrixMode( GL_MODELVIEW );
-}
-void create_sprite(GLuint* sprite,char* filename){
-	glGenTextures( 1, sprite );
-	SDL_Surface* image = SDL_LoadBMP(filename); 
-    glBindTexture( GL_TEXTURE_2D, *sprite );
-    glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR );
-    glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR );
-    glTexImage2D( GL_TEXTURE_2D, 0, 3, image->w, image->h, 0, 
-                      GL_BGR, GL_UNSIGNED_BYTE, image->pixels );
-					  
-    if ( image ) { 
-        SDL_FreeSurface( image );
-    }
-
+    sfVideoMode mode = {screen_w, screen_h, 32};
+    window = sfRenderWindow_create(mode, "SFML window", screen_props, NULL);
 }
 
-void init_opengl(){
-	glClearColor( 255, 255, 255, 0 );
-	glEnable( GL_TEXTURE_2D ); 
-	init_matrix();	
-	glLoadIdentity();
-	create_sprite(&texture,"image.bmp");
-	create_sprite(&block,"block.bmp");
-
+void resize(int width,int height){
+	screen_w = width;
+	screen_h = height;
+	init_screen();
 }
 void toggle_fullscreen(){
 	if(!fullscreen_on){
-		
+		screen_props = sfFullscreen | sfClose; 
 		screen_w = 1920;
 		screen_h = 1200;
-		screen_props = SDL_OPENGL | SDL_FULLSCREEN;
 		fullscreen_on = 1;
 	}
 	else{
+		screen_props = sfResize | sfClose; 
 		screen_w = 800;
 		screen_h = 600;
-		screen_props = SDL_OPENGL | SDL_SWSURFACE;
 		fullscreen_on = 0;
 	}
 	init_screen();
-	init_matrix();
-	init_opengl();
-		
+
 }
 
-
+void create_sprite(char* filename){
+	texture = sfTexture_createFromFile(filename, NULL);
+    sprite = sfSprite_create();
+    sfSprite_setTexture(sprite, texture, sfTrue);
+	sfVector2u size = sfTexture_getSize(texture);
+	sfVector2f origin = {size.x/2,size.y/2};
+    sfSprite_setOrigin(sprite, origin);
+}
 
 int init_graphics() { 
-	if (SDL_Init(SDL_INIT_EVERYTHING) == -1){
-		return -1;
-	}
 	init_screen();
-	init_opengl();
-	
-    return 0;
+	create_sprite("image.bmp");
+    if (!window) return EXIT_FAILURE;
+    if (!sprite) return EXIT_FAILURE;
+	return 0;
 }
 
 void draw_graphics(){
-	glClear( GL_COLOR_BUFFER_BIT );
+    sfRenderWindow_clear(window, sfWhite);
 	Unit** all_units = malloc(get_number_of_players() * get_number_of_units() * sizeof(Unit*));
 	get_all_units(all_units);
 	for(int x; x < get_number_of_players() * get_number_of_units();x++){
 		Unit* unit = all_units[x];	
 		float x = unit->x;
 		float y = unit->y;
+
 		float angle = unit->angle;
-
-    	glBindTexture( GL_TEXTURE_2D, texture );
-		if(angle != 0){
-
-			glTranslatef(x+64,y+64,0);
-			glRotatef(angle, 0.0, 0.0, 1.0);
-			glTranslatef(-(x+64),-(y+64),0);
-		}
-			glBegin( GL_QUADS );
-        // Top-left vertex (corner)
-        		glTexCoord2i( 0, 0 );
-				glVertex2f( x, y );
-    
-        // Bottom-left vertex (corner)
-				glTexCoord2i( 1, 0 );
-				glVertex2f( 128+x, y);
-    
-        // Bottom-right vertex (corner)
-				glTexCoord2i( 1, 1 );
-				glVertex2f( 128+x, 128+y);
-    
-        // Top-right vertex (corner)
-				glTexCoord2i( 0, 1 );
-        		glVertex2f( x, 128+y);
-    		glEnd();
-
-	    glLoadIdentity();
+		sfVector2f vector = {x,y};
+		sfSprite_setPosition(sprite, vector);
+		sfSprite_setRotation(sprite, angle);
+    	sfRenderWindow_drawSprite(window, sprite, NULL);
 
 	}
 	free(all_units);
-
-    SDL_GL_SwapBuffers();
-    glLoadIdentity();
+    sfRenderWindow_display(window);
 }
 
-
+int poll_event(sfEvent* event){
+	return sfRenderWindow_pollEvent(window,event);
+}
 

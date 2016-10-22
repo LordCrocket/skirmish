@@ -1,10 +1,9 @@
-#include <SDL.h>
-SDLKey forward;
-SDLKey right;
-SDLKey left;
-SDLKey back;
-SDLKey fullscreen;
-
+#include <SFML/Window/Event.h>
+sfKeyCode forward;
+sfKeyCode right;
+sfKeyCode left;
+sfKeyCode back;
+sfKeyCode fullscreen;
 typedef struct  {
 	int turn_left;
 	int turn_right;

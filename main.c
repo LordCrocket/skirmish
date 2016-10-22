@@ -1,46 +1,53 @@
-#include <SDL.h>
+#include <SFML/System/Time.h>
+#include <SFML/System/Export.h>
+#include <SFML/Graphics.h>
+#include <SFML/Window.h>
 #include <stdio.h>
-#include <math.h>
-#include "SDL_opengl.h"
+#include <stdlib.h>
 #include "graphics.h"
 #include "gamestate.h"
 #include "controller.h"
 
-int SDLEventFilter(const SDL_Event* filterEvent){
-	if(filterEvent->type == SDL_MOUSEMOTION)
-		return 0;
-	
-	return 1;
+//int SDLEventFilter(const SDL_Event* filterEvent){
+//	if(filterEvent->type == SDL_MOUSEMOTION)
+//		return 0;
+//
+//	return 1;
+//}
+
+
+int get_ticks(sfClock* clock){
+	return sfTime_asMilliseconds(sfClock_getElapsedTime(clock));
 }
 
-
-
 int main(int argc, char** argv) {
+	sfClock* clock = sfClock_create();
 
 	init_graphics();
 	start_new_game();
 
-    SDL_SetEventFilter(SDLEventFilter);
-    int fps = 60;
-       
-    int tickInterval = 1000 / fps;
-       
-    Uint32 nextTick; 
+	int fps = 60;
+
+	int tickInterval = 1000 / fps;
+
+	int nextTick; 
 
 	int quit = 0;
 	while(!quit){
-		nextTick = SDL_GetTicks() + tickInterval;
+		nextTick = get_ticks(clock) + tickInterval;
 		quit = handle_events();
 		send_actions_to_server();
 		update_state();
 		draw_graphics();
 
-		int delay = nextTick - SDL_GetTicks();
-		if (delay > 0)
-        	SDL_Delay(delay);
+		int delay = nextTick - get_ticks(clock);
+		if (delay > 0){
+			sfSleep(sfMilliseconds(delay));
+		}
 	}
-       end_game();
-       SDL_Quit();
-       return 0;
+	end_game();
+	//SDL_Quit();
+	sfClock_destroy(clock);
+    return EXIT_SUCCESS;
 }
 

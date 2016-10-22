@@ -35,6 +35,4 @@ void update_unit_state(Unit** units){
 		avatar->y+= cos(avatar->angle*M_PI/180);
 	}
 	go_forward = go_backwards = turn_left = turn_right = 0;
-
-
 }

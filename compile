@@ -1,1 +1,1 @@
-gcc -Wall -o main  main.c graphics.c gamestate.c controller.c keyboard.c serverproxy.c -std=c99 -L/usr/lib -lSDL -lpthread -I/usr/include/SDL -D_GNU_SOURCE=1 -D_REENTRANT -lSDL -lGL -lm
+gcc -Wall -o main  main.c graphics.c gamestate.c controller.c keyboard.c serverproxy.c -std=c11 -I/usr/local/include/SFML -L/usr/local/lib -lcsfml-window -lcsfml-graphics -lcsfml-audio -lcsfml-system -D_GNU_SOURCE=1 -D_REENTRANT -lm
