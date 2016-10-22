@@ -46,8 +46,8 @@ int main(int argc, char** argv) {
 		}
 	}
 	end_game();
-	//SDL_Quit();
 	sfClock_destroy(clock);
+	destroy_graphics();
     return EXIT_SUCCESS;
 }
 

@@ -15,14 +15,13 @@ int screen_props = sfResize | sfClose;
 
 void init_screen(){
     sfVideoMode mode = {screen_w, screen_h, 32};
-    window = sfRenderWindow_create(mode, "SFML window", screen_props, NULL);
+	if(sfVideoMode_isValid(mode)){
+		if(window) destroy_graphics();
+		window = sfRenderWindow_create(mode, "SFML window", screen_props, NULL);
+	}
 }
 
-void resize(int width,int height){
-	screen_w = width;
-	screen_h = height;
-	init_screen();
-}
+
 void toggle_fullscreen(){
 	if(!fullscreen_on){
 		screen_props = sfFullscreen | sfClose; 
@@ -48,13 +47,21 @@ void create_sprite(char* filename){
 	sfVector2f origin = {size.x/2,size.y/2};
     sfSprite_setOrigin(sprite, origin);
 }
-
+void resize(int width,int height){
+	screen_w = width;
+	screen_h = height;
+	sfFloatRect view = {0,0,width,height};
+	sfRenderWindow_setView(window,sfView_createFromRect(view));
+}
 int init_graphics() { 
 	init_screen();
 	create_sprite("image.bmp");
     if (!window) return EXIT_FAILURE;
     if (!sprite) return EXIT_FAILURE;
 	return 0;
+}
+void destroy_graphics(){
+	sfRenderWindow_close(window);
 }
 
 void draw_graphics(){
@@ -70,6 +77,9 @@ void draw_graphics(){
 		sfVector2f vector = {x,y};
 		sfSprite_setPosition(sprite, vector);
 		sfSprite_setRotation(sprite, angle);
+		//sfFloatRect bounds = sfSprite_getLocalBounds(sprite);
+		//sfVector2f scale = {128 / bounds.width,128 / bounds.height};
+		//sfSprite_setScale(sprite,scale);
     	sfRenderWindow_drawSprite(window, sprite, NULL);
 
 	}

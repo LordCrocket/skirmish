@@ -39,10 +39,10 @@ int handle_events(){
 				quit = 1;
 				break;
 			}
-			else if (event.type == sfEvtKeyPressed || sfEvtKeyReleased){
-					handle_keypress(&event);
+			else if ((event.type == sfEvtKeyPressed) || (event.type == sfEvtKeyReleased)){
+				handle_keypress(&event);
 			}
-			else if (sfEvtResized){
+			else if (event.type == sfEvtResized){
 				resize(event.size.width,event.size.height);
 			}
 	}
