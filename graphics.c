@@ -69,7 +69,7 @@ void draw_graphics(){
 	Unit** all_units = malloc(get_number_of_players() * get_number_of_units() * sizeof(Unit*));
 	get_all_units(all_units);
 	for(int x; x < get_number_of_players() * get_number_of_units();x++){
-		Unit* unit = all_units[x];	
+		Unit* unit = all_units[x];
 		float x = unit->x;
 		float y = unit->y;
 
@@ -80,6 +80,14 @@ void draw_graphics(){
     	sfRenderWindow_drawSprite(window, sprite, NULL);
 
 	}
+	Unit* player = all_units[0];	
+	float x = player->x;
+	float y = player->y;
+	sfFloatRect view = {0,0,screen_w,screen_h};
+	sfVector2f vector = {x,y};
+	sfView * sfView = sfView_createFromRect(view);
+	sfView_setCenter(sfView,vector);
+	sfRenderWindow_setView(window,sfView);
 	free(all_units);
     sfRenderWindow_display(window);
 }
