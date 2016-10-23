@@ -7,28 +7,37 @@
 #include "graphics.h"
 #include <SFML/Window/Event.h>
 
-int is_pressed(sfEvent* event){
-	return (event->type == sfEvtKeyPressed);
+int is_pressed(sfKeyCode key){
+	return sfKeyboard_isKeyPressed(key);
 }
 
 void handle_keypress(sfEvent* event){
 
 	sfKeyCode key = event->key.code;
-	if (event->type == sfEvtKeyPressed && key == fullscreen){
+	if (event->type == sfEvtKeyReleased && key == fullscreen){
 		toggle_fullscreen();
 	}
-	else if (key == left){
-		get_keyboardstate()->turn_left = is_pressed(event);
+	if(event->type == sfEvtKeyPressed){
+		if (key == left){
+			get_keyboardstate()->turn_left = is_pressed(key);
+		}
+		else if (key == right){
+			get_keyboardstate()->turn_right = is_pressed(key);
+		}
+		else if (key == forward){
+			get_keyboardstate()->go_forward = is_pressed(key);
+		}
+		else if (key == backwards){
+			get_keyboardstate()->go_backwards = is_pressed(key);
+		}
 	}
-	else if (key == right){
-		get_keyboardstate()->turn_right = is_pressed(event);
-	}
-	else if (key == forward){
-		get_keyboardstate()->go_forward = is_pressed(event);
-	}
-	else if (key == back){
-		get_keyboardstate()->go_backwards = is_pressed(event);
-	}
+}
+
+void reset_unpressed_keys(){
+		if(!is_pressed(left)) get_keyboardstate()->turn_left = 0;
+		if(!is_pressed(right)) get_keyboardstate()->turn_right = 0;
+		if(!is_pressed(forward)) get_keyboardstate()->go_forward = 0;
+		if(!is_pressed(backwards)) get_keyboardstate()->go_backwards = 0;
 }
 
 int handle_events(){
@@ -47,6 +56,7 @@ int handle_events(){
 			}
 	}
 
+	reset_unpressed_keys();
 	return quit;
 }
 

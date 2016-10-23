@@ -2,6 +2,6 @@
 sfKeyCode forward = sfKeyW;
 sfKeyCode right = sfKeyD;
 sfKeyCode left = sfKeyA;
-sfKeyCode back = sfKeyS;
+sfKeyCode backwards = sfKeyS;
 sfKeyCode fullscreen = sfKeyF;
 

@@ -77,9 +77,6 @@ void draw_graphics(){
 		sfVector2f vector = {x,y};
 		sfSprite_setPosition(sprite, vector);
 		sfSprite_setRotation(sprite, angle);
-		//sfFloatRect bounds = sfSprite_getLocalBounds(sprite);
-		//sfVector2f scale = {128 / bounds.width,128 / bounds.height};
-		//sfSprite_setScale(sprite,scale);
     	sfRenderWindow_drawSprite(window, sprite, NULL);
 
 	}

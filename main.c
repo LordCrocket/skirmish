@@ -36,6 +36,7 @@ int main(int argc, char** argv) {
 	while(!quit){
 		nextTick = get_ticks(clock) + tickInterval;
 		quit = handle_events();
+		//update_keyboardstate();
 		send_actions_to_server();
 		update_state();
 		draw_graphics();

@@ -2,7 +2,7 @@
 sfKeyCode forward;
 sfKeyCode right;
 sfKeyCode left;
-sfKeyCode back;
+sfKeyCode backwards;
 sfKeyCode fullscreen;
 typedef struct  {
 	int turn_left;
