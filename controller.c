@@ -5,6 +5,7 @@
 #include "action.h"
 #include "serverproxy.h"
 #include "graphics.h"
+#include "sound.h"
 #include <SFML/Window/Event.h>
 
 int is_pressed(sfKeyCode key){
@@ -14,8 +15,14 @@ int is_pressed(sfKeyCode key){
 void handle_keypress(sfEvent* event){
 
 	sfKeyCode key = event->key.code;
-	if (event->type == sfEvtKeyReleased && key == fullscreen){
-		toggle_fullscreen();
+	if (event->type == sfEvtKeyReleased){
+		if(key == fullscreen){
+			toggle_fullscreen();
+		}
+		else if (key == fire){
+			play_sound(ORC_VOICE,0);
+			play_sound(MACHINE_GUN,42);
+		}
 	}
 	if(event->type == sfEvtKeyPressed){
 		if (key == left){

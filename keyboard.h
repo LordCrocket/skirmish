@@ -4,6 +4,7 @@ sfKeyCode right;
 sfKeyCode left;
 sfKeyCode backwards;
 sfKeyCode fullscreen;
+sfKeyCode fire;
 typedef struct  {
 	int turn_left;
 	int turn_right;

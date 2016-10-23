@@ -20,6 +20,8 @@ void send_action(Action action){
 
 void update_unit_state(Unit** units){
 	Unit* avatar = units[0];
+	Unit* unit = units[1];
+	unit->x+=1;
 	if(turn_right){
 		avatar->angle+=2;
 	}

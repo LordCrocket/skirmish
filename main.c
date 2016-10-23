@@ -7,6 +7,7 @@
 #include "graphics.h"
 #include "gamestate.h"
 #include "controller.h"
+#include "sound.h"
 
 //int SDLEventFilter(const SDL_Event* filterEvent){
 //	if(filterEvent->type == SDL_MOUSEMOTION)
@@ -24,6 +25,7 @@ int main(int argc, char** argv) {
 	sfClock* clock = sfClock_create();
 
 	init_graphics();
+	init_sound();
 	start_new_game();
 
 	int fps = 60;
@@ -39,6 +41,7 @@ int main(int argc, char** argv) {
 		send_actions_to_server();
 		update_state();
 		draw_graphics();
+		poll_sounds();
 
 		int delay = nextTick - get_ticks(clock);
 		if (delay > 0){
