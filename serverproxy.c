@@ -21,10 +21,10 @@ void send_action(Action action){
 void update_unit_state(Unit** units){
 	Unit* avatar = units[0];
 	if(turn_right){
-		avatar->angle+=3;
+		avatar->angle+=2;
 	}
 	if(turn_left){
-		avatar->angle-=3;
+		avatar->angle-=2;
 	}
 	if(go_forward){
 		avatar->x+= 3*sin(avatar->angle*M_PI/180);

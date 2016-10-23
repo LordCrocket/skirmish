@@ -64,6 +64,18 @@ void destroy_graphics(){
 	sfRenderWindow_close(window);
 }
 
+void center_on_player(Unit * player){
+	float x = player->x;
+	float y = player->y;
+	float angle = player->angle;
+	sfFloatRect view = {0,0,screen_w,screen_h};
+	sfVector2f vector = {x,y};
+	sfView * sfView = sfView_createFromRect(view);
+	sfView_setCenter(sfView,vector);
+	sfView_rotate (sfView,angle);
+	sfRenderWindow_setView(window,sfView);
+}
+
 void draw_graphics(){
     sfRenderWindow_clear(window, sfWhite);
 	Unit** all_units = malloc(get_number_of_players() * get_number_of_units() * sizeof(Unit*));
@@ -81,13 +93,7 @@ void draw_graphics(){
 
 	}
 	Unit* player = all_units[0];	
-	float x = player->x;
-	float y = player->y;
-	sfFloatRect view = {0,0,screen_w,screen_h};
-	sfVector2f vector = {x,y};
-	sfView * sfView = sfView_createFromRect(view);
-	sfView_setCenter(sfView,vector);
-	sfRenderWindow_setView(window,sfView);
+	center_on_player(player);
 	free(all_units);
     sfRenderWindow_display(window);
 }
