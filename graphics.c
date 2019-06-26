@@ -80,7 +80,7 @@ void draw_graphics(){
     sfRenderWindow_clear(window, sfWhite);
 	Unit** all_units = malloc(get_number_of_players() * get_number_of_units() * sizeof(Unit*));
 	get_all_units(all_units);
-	for(int x; x < get_number_of_players() * get_number_of_units();x++){
+	for(int x = 0; x < get_number_of_players() * get_number_of_units();x++){
 		Unit* unit = all_units[x];
 		float x = unit->x;
 		float y = unit->y;
