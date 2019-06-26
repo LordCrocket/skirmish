@@ -5,12 +5,19 @@
 #include <stdlib.h>
 
 sfRenderWindow* window;
+sfView* windowView;
+
+sfSprite* background;
+sfTexture* background_texture;
 sfTexture* texture;
 sfSprite* sprite;
+
 int fullscreen_on = 0;
 int screen_w = 1920;
 int screen_h = 1080;
 int screen_props = sfResize | sfClose;
+float zoom = 1;
+//int screen_props = sfFullscreen | sfClose;
 
 
 void init_screen(){
@@ -39,6 +46,19 @@ void toggle_fullscreen(){
 
 }
 
+void add_background(){
+	sfIntRect size = { 0,0,4096,4096 };
+	background_texture = sfTexture_createFromFile("background.png", NULL);
+	sfTexture_setSmooth(background_texture,sfFalse);
+	sfTexture_setRepeated(background_texture,sfTrue);
+
+    background = sfSprite_create();
+    sfSprite_setTexture(background, background_texture, sfTrue);
+	sfSprite_setTextureRect(background,size);
+	sfVector2f position = { -2048,-2048};
+	sfSprite_setPosition(background,position);
+}
+
 void create_sprite(char* filename){
 	texture = sfTexture_createFromFile(filename, NULL);
     sprite = sfSprite_create();
@@ -55,7 +75,8 @@ void resize(int width,int height){
 }
 int init_graphics() { 
 	init_screen();
-	create_sprite("image.bmp");
+	add_background();
+	create_sprite("octo.png");
     if (!window) return EXIT_FAILURE;
     if (!sprite) return EXIT_FAILURE;
 	return 0;
@@ -64,7 +85,7 @@ void destroy_graphics(){
 	sfRenderWindow_close(window);
 }
 
-void center_on_player(Unit * player){
+void center_on_player(Unit* player){
 	float x = player->x;
 	float y = player->y;
 	float angle = player->angle;
@@ -73,11 +94,25 @@ void center_on_player(Unit * player){
 	sfView * sfView = sfView_createFromRect(view);
 	sfView_setCenter(sfView,vector);
 	sfView_rotate (sfView,angle);
-	sfRenderWindow_setView(window,sfView);
+	windowView = sfView;
 }
+
+void zoom_view (float factor){
+	sfView_zoom(windowView,factor);
+}
+void zoom_out(){
+	zoom += 0.1;
+}
+void zoom_in(){
+	if(zoom > 0.1){
+		zoom -= 0.1;
+	}
+}
+
 
 void draw_graphics(){
     sfRenderWindow_clear(window, sfWhite);
+	sfRenderWindow_drawSprite(window, background, NULL);
 	Unit** all_units = malloc(get_number_of_players() * get_number_of_units() * sizeof(Unit*));
 	get_all_units(all_units);
 	for(int x = 0; x < get_number_of_players() * get_number_of_units();x++){
@@ -94,6 +129,10 @@ void draw_graphics(){
 	}
 	Unit* player = all_units[0];	
 	center_on_player(player);
+	zoom_view(zoom);
+
+	sfRenderWindow_setView(window,windowView);
+
 	free(all_units);
     sfRenderWindow_display(window);
 }

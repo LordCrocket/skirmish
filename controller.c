@@ -3,6 +3,7 @@
 #include "gamestate.h"
 #include <math.h>
 #include "action.h"
+#include "controller.h"
 #include "serverproxy.h"
 #include "graphics.h"
 #include "sound.h"
@@ -60,6 +61,15 @@ int handle_events(){
 			}
 			else if (event.type == sfEvtResized){
 				resize(event.size.width,event.size.height);
+			}
+
+			else if(event.type == sfEvtMouseWheelScrolled){
+				if(event.mouseWheelScroll.delta < 0){
+					zoom_out();
+				}
+				else {
+					zoom_in();
+				}
 			}
 	}
 

@@ -40,7 +40,7 @@ int main(int argc, char** argv) {
 		quit = handle_events();
 		send_actions_to_server();
 		update_state();
-		draw_graphics();
+        draw_graphics();
 		poll_sounds();
 
 		int delay = nextTick - get_ticks(clock);
