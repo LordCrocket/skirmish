@@ -6,3 +6,4 @@ main
 hardcopy.*
 list_modes
 *.a
+*.o
