@@ -6,6 +6,7 @@ CC := gcc
 CFLAGS  := -Wall -std=c11 -D_GNU_SOURCE=1 -D_REENTRANT
 LDLIBS := -lcsfml-window -lcsfml-graphics -lcsfml-audio -lcsfml-system -lm
 LDFLAGS :=
+TARGET := main
 
 
 
@@ -13,6 +14,7 @@ all: main
 
 
 main: $(OBJECTS) 
+
 
 main.o: action.h graphics.h gamestate.h controller.h sound.h
 controller.o: action.h graphics.h gamestate.h controller.h serverproxy.h sound.h
@@ -22,8 +24,7 @@ keyboard.o: keyboard.h
 serverproxy.o: action.h gamestate.h serverproxy.h
 sound.o: sound.h
 
-.PHONY : clean main all
+.PHONY : clean all
 
 clean:
-	-rm *.o
-
+	-rm *.o main
